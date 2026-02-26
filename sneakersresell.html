@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sneaker Resell — Santiago Del Valle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* PAGE-SPECIFIC STYLES */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      margin-bottom: 3rem;
+    }
+    .back-link:hover { color: var(--accent); }
+    .back-link::before { content: '←'; font-size: 14px; }
+
+    .project-hero {
+      min-height: 55vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 8rem 4rem 4rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .project-hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.2;
+    }
+
+    .project-hero-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(180,127,255,0.07) 0%, transparent 70%);
+      top: 50%;
+      left: 30%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .project-hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-badge {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid rgba(180,127,255,0.3);
+      color: var(--accent);
+      background: rgba(180,127,255,0.07);
+    }
+
+    .meta-sep { color: var(--border); }
+
+    .meta-type {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .project-hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 900;
+      line-height: 0.95;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    .project-hero-title span {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--accent);
+    }
+
+    .project-hero-tagline {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 600px;
+      line-height: 1.9;
+    }
+
+    /* CONTENT */
+    .project-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .content-section + .content-section {
+      margin-top: 3.5rem;
+      padding-top: 3.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .content-label {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .content-title {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.2rem;
+      line-height: 1.2;
+    }
+
+    .content-text {
+      color: #aaa;
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    .content-text p + p { margin-top: 1rem; }
+
+    /* FEATURE LIST */
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      color: #aaa;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .feature-list li::before {
+      content: '▸';
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* SIDEBAR */
+    .project-sidebar {
+      position: sticky;
+      top: 6rem;
+    }
+
+    .sidebar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar-title {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tech-tag {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      padding: 0.4rem 0.8rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .tech-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .sidebar-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(180,127,255,0.05);
+    }
+
+    .sidebar-link span { font-size: 14px; }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { color: var(--muted); }
+    .stat-value { color: var(--text); }
+    .stat-value.accent { color: var(--accent); }
+
+    @media (max-width: 768px) {
+      .project-hero { padding: 7rem 1.5rem 3rem; }
+      .project-content { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 3rem; }
+      .project-sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">S<span>.</span>Del Valle</a>
+    <ul class="nav-links">
+      <li><a href="index.html#about">Sobre mí</a></li>
+      <li><a href="index.html#projects">Proyectos</a></li>
+      <li><a href="index.html#contact">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <!-- PROJECT HERO -->
+  <div class="project-hero">
+    <div class="project-hero-bg"></div>
+    <div class="project-hero-glow"></div>
+    <div class="project-hero-content">
+      <a href="index.html#projects" class="back-link">Volver a proyectos</a>
+      <div class="project-meta">
+        <span class="meta-badge">001</span>
+        <span class="meta-sep">—</span>
+        <span class="meta-type">Proyecto Personal</span>
+      </div>
+      <h1 class="project-hero-title">
+        Sneaker
+        <span>Resell</span>
+      </h1>
+      <p class="project-hero-tagline">
+        Plataforma web full-stack para comprar y vender sneakers, con autenticación, mensajería interna y un chatbot de recomendaciones impulsado por IA.
+      </p>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="project-content">
+
+    <!-- LEFT: Description -->
+    <div>
+
+      <div class="content-section reveal">
+        <p class="content-label">// el proyecto</p>
+        <h2 class="content-title">¿Qué es SneakerResell?</h2>
+        <div class="content-text">
+          <p>SneakerResell es una aplicación web construida con Flask y SQLite orientada al mercado de reventa de zapatillas. Permite a los usuarios tanto comprar como vender productos dentro de la misma plataforma, con una experiencia cercana a la de un marketplace real.</p>
+          <p>El proyecto nació como un ejercicio completo de desarrollo web: desde el diseño de la base de datos y la lógica del backend, hasta las vistas HTML/CSS del frontend. Cada funcionalidad fue pensada para resolver un problema concreto de los usuarios.</p>
+        </div>
+      </div>
+
+      <div class="content-section reveal">
+        <p class="content-label">// funcionalidades</p>
+        <h2 class="content-title">¿Qué puede hacer?</h2>
+        <ul class="feature-list">
+          <li>Registro e inicio de sesión con autenticación de usuarios</li>
+          <li>Publicación de productos con imágenes, precio y descripción</li>
+          <li>Catálogo dinámico de sneakers disponibles para compra</li>
+          <li>Sistema de mensajería interna entre compradores y vendedores</li>
+          <li>Chatbot de recomendaciones integrado, impulsado por Llama 3.2 vía Ollama</li>
+        </ul>
+      </div>
+
+      <div class="content-section reveal">
+        <p class="content-label">// aprendizajes</p>
+        <h2 class="content-title">¿Qué aprendí?</h2>
+        <div class="content-text">
+          <p>Este proyecto fue mi primera experiencia construyendo una aplicación web completa de principio a fin. Aprendí a estructurar un proyecto Flask, a manejar bases de datos relacionales con SQLite, y a integrar un modelo de IA local para enriquecer la experiencia del usuario.</p>
+          <p>También fue mi primer acercamiento real a la autenticación, el manejo de sesiones y la lógica de un sistema de mensajería entre usuarios.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Sidebar -->
+    <aside class="project-sidebar">
+
+      <div class="sidebar-card reveal">
+        <p class="sidebar-title">// stack tecnológico</p>
+        <div class="tech-stack">
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">Flask</span>
+          <span class="tech-tag">SQLite</span>
+          <span class="tech-tag">HTML</span>
+          <span class="tech-tag">CSS</span>
+          <span class="tech-tag">Llama 3.2</span>
+          <span class="tech-tag">Ollama</span>
+        </div>
+      </div>
+
+      <div class="sidebar-card reveal">
+        <p class="sidebar-title">// detalles</p>
+        <div class="stat-row">
+          <span class="stat-label">Tipo</span>
+          <span class="stat-value">Proyecto personal</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Backend</span>
+          <span class="stat-value accent">Flask + SQLite</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Frontend</span>
+          <span class="stat-value">HTML / CSS</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">IA</span>
+          <span class="stat-value accent">Llama 3.2</span>
+        </div>
+      </div>
+
+      <a href="https://github.com/Santiago-dv/pagina_sneakerResell" target="_blank" class="sidebar-link reveal">
+        Ver en GitHub <span>↗</span>
+      </a>
+
+    </aside>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2025 Santiago Del Valle</span>
+    <a href="index.html#projects" style="color: var(--muted); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">← Volver a proyectos</a>
+  </footer>
+
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => observer.observe(r));
+  </script>
+
+</body>
+</html>

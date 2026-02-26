@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ML con Llama 3.1 — Santiago Del Valle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      margin-bottom: 3rem;
+    }
+    .back-link:hover { color: var(--accent); }
+    .back-link::before { content: '←'; font-size: 14px; }
+
+    .project-hero {
+      min-height: 55vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 8rem 4rem 4rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .project-hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.2;
+    }
+
+    .project-hero-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(180,127,255,0.07) 0%, transparent 70%);
+      top: 50%;
+      left: 30%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .project-hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-badge {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid rgba(180,127,255,0.3);
+      color: var(--accent);
+      background: rgba(180,127,255,0.07);
+    }
+
+    .meta-sep { color: var(--border); }
+
+    .meta-type {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .project-hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 900;
+      line-height: 0.95;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    .project-hero-title span {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--accent);
+    }
+
+    .project-hero-tagline {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 600px;
+      line-height: 1.9;
+    }
+
+    .project-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .content-section + .content-section {
+      margin-top: 3.5rem;
+      padding-top: 3.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .content-label {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .content-title {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.2rem;
+      line-height: 1.2;
+    }
+
+    .content-text {
+      color: #aaa;
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    .content-text p + p { margin-top: 1rem; }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      color: #aaa;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .feature-list li::before {
+      content: '▸';
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .project-sidebar {
+      position: sticky;
+      top: 6rem;
+    }
+
+    .sidebar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar-title {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tech-tag {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      padding: 0.4rem 0.8rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .tech-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { color: var(--muted); }
+    .stat-value { color: var(--text); }
+    .stat-value.accent { color: var(--accent); }
+
+    .collab-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.3s;
+    }
+
+    .collab-card:hover { border-color: rgba(180,127,255,0.4); }
+
+    .collab-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(180,127,255,0.15);
+      border: 1px solid rgba(180,127,255,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: var(--accent);
+      flex-shrink: 0;
+      font-family: var(--serif);
+      font-weight: 700;
+    }
+
+    .collab-info { font-size: 12px; }
+    .collab-name { color: var(--text); margin-bottom: 0.2rem; }
+    .collab-role { color: var(--muted); font-size: 11px; }
+
+    @media (max-width: 768px) {
+      .project-hero { padding: 7rem 1.5rem 3rem; }
+      .project-content { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 3rem; }
+      .project-sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">S<span>.</span>Del Valle</a>
+    <ul class="nav-links">
+      <li><a href="index.html#about">Sobre mí</a></li>
+      <li><a href="index.html#projects">Proyectos</a></li>
+      <li><a href="index.html#contact">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <div class="project-hero">
+    <div class="project-hero-bg"></div>
+    <div class="project-hero-glow"></div>
+    <div class="project-hero-content">
+      <a href="index.html#projects" class="back-link">Volver a proyectos</a>
+      <div class="project-meta">
+        <span class="meta-badge">003</span>
+        <span class="meta-sep">—</span>
+        <span class="meta-type">Proyecto Colaborativo</span>
+      </div>
+      <h1 class="project-hero-title">
+        Machine Learning
+        <span>con Llama 3.1</span>
+      </h1>
+      <p class="project-hero-tagline">
+        Optimización y fine-tuning de Llama 3.1 para tareas específicas, desarrollado en colaboración con Daniel Romero.
+      </p>
+    </div>
+  </div>
+
+  <div class="project-content">
+    <div>
+
+      <div class="content-section reveal">
+        <p class="content-label">// el proyecto</p>
+        <h2 class="content-title">¿Qué es este proyecto?</h2>
+        <div class="content-text">
+          <p>Es un proyecto de machine learning enfocado en el fine-tuning y optimización del modelo de lenguaje Llama 3.1 de Meta para adaptarlo a tareas concretas y específicas. En lugar de usar el modelo base genérico, trabajamos en entrenarlo con datos orientados a un dominio particular para mejorar su precisión y utilidad.</p>
+          <p>Fue desarrollado en colaboración con Daniel Romero Madrid, compañero del semillero de investigación en aplicaciones telemáticas de la UNIBARRANQUILLA. El trabajo conjunto permitió explorar técnicas avanzadas de ajuste de modelos LLM con recursos limitados.</p>
+        </div>
+      </div>
+
+      <div class="content-section reveal">
+        <p class="content-label">// funcionalidades</p>
+        <h2 class="content-title">¿Qué logramos?</h2>
+        <ul class="feature-list">
+          <li>Fine-tuning de Llama 3.1 para adaptar el modelo a tareas específicas de dominio</li>
+          <li>Optimización del proceso de entrenamiento para ejecutarse con hardware accesible</li>
+          <li>Evaluación y comparación del rendimiento antes y después del ajuste</li>
+          <li>Implementación local del modelo con Ollama para inferencia eficiente</li>
+          <li>Exploración de técnicas como LoRA para reducir el costo computacional del fine-tuning</li>
+        </ul>
+      </div>
+
+      <div class="content-section reveal">
+        <p class="content-label">// aprendizajes</p>
+        <h2 class="content-title">¿Qué aprendí?</h2>
+        <div class="content-text">
+          <p>Este fue mi proyecto más técnico hasta la fecha. Aprendí cómo funcionan internamente los modelos de lenguaje grandes (LLMs), cómo se pueden adaptar a casos de uso específicos mediante fine-tuning, y los desafíos reales de trabajar con modelos de esta escala.</p>
+          <p>También profundicé en conceptos clave de machine learning como la preparación de datasets, la evaluación de modelos y las técnicas de optimización de parámetros. Trabajar junto a Daniel me permitió abordar el proyecto desde distintos ángulos y aprender de su experiencia en telecomunicaciones e IA.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <aside class="project-sidebar">
+
+      <div class="sidebar-card reveal">
+        <p class="sidebar-title">// stack tecnológico</p>
+        <div class="tech-stack">
+          <span class="tech-tag">Llama 3.1</span>
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">Ollama</span>
+          <span class="tech-tag">LoRA</span>
+          <span class="tech-tag">Fine-tuning</span>
+          <span class="tech-tag">ML</span>
+        </div>
+      </div>
+
+      <div class="sidebar-card reveal">
+        <p class="sidebar-title">// detalles</p>
+        <div class="stat-row">
+          <span class="stat-label">Tipo</span>
+          <span class="stat-value">Colaborativo</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Modelo</span>
+          <span class="stat-value accent">Llama 3.1</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Técnica</span>
+          <span class="stat-value">Fine-tuning</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Área</span>
+          <span class="stat-value accent">LLM / ML</span>
+        </div>
+      </div>
+
+      <div class="sidebar-card reveal">
+        <p class="sidebar-title">// equipo</p>
+        <div class="collab-card">
+          <div class="collab-avatar">S</div>
+          <div class="collab-info">
+            <p class="collab-name">Santiago Del Valle</p>
+            <p class="collab-role">Desarrollo & entrenamiento</p>
+          </div>
+        </div>
+        <div class="collab-card">
+          <div class="collab-avatar">D</div>
+          <div class="collab-info">
+            <p class="collab-name">Daniel Romero</p>
+            <p class="collab-role">Desarrollo & entrenamiento</p>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <footer>
+    <span>© 2025 Santiago Del Valle</span>
+    <a href="index.html#projects" style="color: var(--muted); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">← Volver a proyectos</a>
+  </footer>
+
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => observer.observe(r));
+  </script>
+
+</body>
+</html>

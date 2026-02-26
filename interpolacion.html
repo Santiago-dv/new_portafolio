@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Interpolación — Santiago Del Valle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      margin-bottom: 3rem;
+    }
+    .back-link:hover { color: var(--accent); }
+    .back-link::before { content: '←'; font-size: 14px; }
+
+    .project-hero {
+      min-height: 55vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 8rem 4rem 4rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .project-hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.2;
+    }
+
+    .project-hero-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(180,127,255,0.07) 0%, transparent 70%);
+      top: 50%;
+      left: 30%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .project-hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+    }
+
+    .project-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .meta-badge {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid rgba(180,127,255,0.3);
+      color: var(--accent);
+      background: rgba(180,127,255,0.07);
+    }
+
+    .meta-sep { color: var(--border); }
+
+    .meta-type {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .project-hero-title {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 900;
+      line-height: 0.95;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    .project-hero-title span {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--accent);
+    }
+
+    .project-hero-tagline {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 600px;
+      line-height: 1.9;
+    }
+
+    .project-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .content-section + .content-section {
+      margin-top: 3.5rem;
+      padding-top: 3.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .content-label {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .content-title {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.2rem;
+      line-height: 1.2;
+    }
+
+    .content-text {
+      color: #aaa;
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    .content-text p + p { margin-top: 1rem; }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      color: #aaa;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .feature-list li::before {
+      content: '▸';
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .project-sidebar { position: sticky; top: 6rem; }
+
+    .sidebar-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .sidebar-title {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+
+    .tech-stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+    .tech-tag {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      padding: 0.4rem 0.8rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .tech-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { color: var(--muted); }
+    .stat-value { color: var(--text); }
+    .stat-value.accent { color: var(--accent); }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .sidebar-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(180,127,255,0.05);
+    }
+
+    .sidebar-link span { font-size: 14px; }
+
+    @media (max-width: 768px) {
+      .project-hero { padding: 7rem 1.5rem 3rem; }
+      .project-content { grid-template-columns: 1fr; padding: 3rem 1.5rem; gap: 3rem; }
+      .project-sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">S<span>.</span>Del Valle</a>
+    <ul class="nav-links">
+      <li><a href="index.html#about">Sobre mí</a></li>
+      <li><a href="index.html#projects">Proyectos</a></li>
+      <li><a href="index.html#contact">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <div class="project-hero">
+    <div class="project-hero-bg"></div>
+    <div class="project-hero-glow"></div>
+    <div class="project-hero-content">
+      <a href="index.html#projects" class="back-link">Volver a proyectos</a>
+      <div class="project-meta">
+        <span class="meta-badge">002</span>
+        <span class="meta-sep">—</span>
+        <span class="meta-type">Proyecto Personal</span>
+      </div>
+      <h1 class="project-hero-title">
+        Calculadora de
+        <span>Interpolación</span>
+      </h1>
+      <p class="project-hero-tagline">
+        Herramienta web interactiva que implementa los 3 métodos numéricos de interpolación más utilizados en modelamiento matemático.
+      </p>
+    </div>
+  </div>
+
+  <div class="project-content">
+    <div>
+
+      <div class="content-section reveal">
+        <p class="content-label">// el proyecto</p>
+        <h2 class="content-title">¿Qué es esta calculadora?</h2>
+        <div class="content-text">
+          <p>Es una aplicación web que permite calcular valores interpolados usando los tres métodos numéricos principales: interpolación de Lagrange, Newton y lineal. Fue desarrollada como proyecto de modelamiento matemático, traduciendo conceptos del cálculo numérico en una herramienta visual e interactiva.</p>
+          <p>El usuario ingresa los puntos conocidos y el valor a interpolar, y la calculadora aplica automáticamente los métodos para entregar el resultado. Todo construido desde cero con HTML, CSS y JavaScript puro, sin librerías externas.</p>
+        </div>
+      </div>
+
+      <div class="content-section reveal">
+        <p class="content-label">// funcionalidades</p>
+        <h2 class="content-title">¿Qué puede hacer?</h2>
+        <ul class="feature-list">
+          <li>Interpolación de Lagrange — cálculo del polinomio interpolador clásico</li>
+          <li>Interpolación de Newton — método de diferencias divididas</li>
+          <li>Interpolación lineal — estimación entre dos puntos conocidos</li>
+          <li>Interfaz interactiva para ingresar puntos y obtener resultados en tiempo real</li>
+          <li>Visualización clara de los resultados para cada método</li>
+        </ul>
+      </div>
+
+      <div class="content-section reveal">
+        <p class="content-label">// aprendizajes</p>
+        <h2 class="content-title">¿Qué aprendí?</h2>
+        <div class="content-text">
+          <p>Este proyecto me permitió conectar dos mundos: el cálculo numérico y el desarrollo web. Implementar los algoritmos de interpolación desde cero en JavaScript me obligó a entender a fondo la matemática detrás de cada método, no solo memorizarla.</p>
+          <p>También fue un ejercicio sólido de lógica de programación pura — sin frameworks ni librerías, solo JavaScript vanilla resolviendo problemas matemáticos reales.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <aside class="project-sidebar">
+
+      <div class="sidebar-card reveal">
+        <p class="sidebar-title">// stack tecnológico</p>
+        <div class="tech-stack">
+          <span class="tech-tag">HTML</span>
+          <span class="tech-tag">CSS</span>
+          <span class="tech-tag">JavaScript</span>
+          <span class="tech-tag">Cálculo Numérico</span>
+        </div>
+      </div>
+
+      <div class="sidebar-card reveal">
+        <p class="sidebar-title">// detalles</p>
+        <div class="stat-row">
+          <span class="stat-label">Tipo</span>
+          <span class="stat-value">Proyecto personal</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Área</span>
+          <span class="stat-value accent">Modelamiento</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Frontend</span>
+          <span class="stat-value">Vanilla JS</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Métodos</span>
+          <span class="stat-value accent">3 algoritmos</span>
+        </div>
+      </div>
+
+      <a href="https://github.com/Santiago-dv/Proyecto_3er_corte" target="_blank" class="sidebar-link reveal">
+        Ver en GitHub <span>↗</span>
+      </a>
+
+    </aside>
+  </div>
+
+  <footer>
+    <span>© 2025 Santiago Del Valle</span>
+    <a href="index.html#projects" style="color: var(--muted); text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">← Volver a proyectos</a>
+  </footer>
+
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => observer.observe(r));
+  </script>
+
+</body>
+</html>
